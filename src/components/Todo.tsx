@@ -14,6 +14,10 @@ const todoReducer = (state: TodoProps[], action: Action): TodoProps[] => {
     }
     case "DELETE":
       return state.filter(todo => todo.id !== action.payload)
+    case "EDIT":
+      return state.map( todo =>
+        todo.id === action.payload.id ? {...todo, text: action.payload.newText} : todo
+      )
     default:
       return state;
   }
