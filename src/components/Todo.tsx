@@ -1,5 +1,5 @@
 import TodoForm from "./TodoForm.tsx";
-import {useEffect, useReducer} from "react";
+import {useEffect, useReducer, useRef} from "react";
 import TodoList from "./TodoList.tsx";
 import type { TodoProps, Action} from "../types.ts";
 
@@ -34,6 +34,7 @@ const todoReducer = (state: TodoProps[], action: Action): TodoProps[] => {
 };
 
 const Todo = () => {
+  const inputRef = useRef<HTMLInputElement>(null)
   const [todos, dispatch] = useReducer(todoReducer, [], getInitialTodos);
   const totalTasks: number = todos.length;
   const completedTasks: number = todos.filter(t => t.completed).length;
@@ -45,13 +46,18 @@ const Todo = () => {
 
   const handleClearAll = () => {
     dispatch({type: "CLEAR_ALL"})
+    inputRef.current?.focus();
   }
+
+  useEffect(() => {
+    inputRef.current?.focus()
+  }, [])
 
   return (
     <>
       <div  className="max-w-sm mx-auto p-6">
         <h1 className="text-center text-2xl font-bold mb-2">To-Do List</h1>
-        <TodoForm dispatch={dispatch} />
+        <TodoForm dispatch={dispatch} inputRef={inputRef} />
         <TodoList todos={todos} dispatch={dispatch} />
 
         {todos.length > 0 && (
